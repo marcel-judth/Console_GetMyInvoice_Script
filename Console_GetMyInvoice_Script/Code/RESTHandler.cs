@@ -9,6 +9,7 @@ namespace Console_GetMyInvoice_Script.Code
     {
         private readonly string basURL = "https://api.getmyinvoices.com/accounts/v3";
         private readonly string api_key = "asi7-8uxr-jj8y-2snw-bpzv-35gv-rfa6";
+
         public async Task<string> GetDocumentList(string filter)
         {
             HttpClient client = new HttpClient();
@@ -25,7 +26,6 @@ namespace Console_GetMyInvoice_Script.Code
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
         }
 
         public async Task<string> GetDocument(int documentUid, string filter)
