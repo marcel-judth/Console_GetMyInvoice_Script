@@ -12,8 +12,11 @@ namespace Console_GetMyInvoice_Script.Code
 
         public void SaveGetMyInvoices(string folderpath)
         {
+            Console.WriteLine($"loading data");
             List<Document> allDocuments = GetDocumentsFromRESTService();
+            Console.WriteLine($"Documents: {allDocuments.Count}");
             List<DocumentContent> docContents = GetInvoicesUid(allDocuments);
+            Console.WriteLine($"Documents: {docContents.Count}");
             SaveFileContentAsPDF(docContents, folderpath);
         }
 
@@ -61,6 +64,7 @@ namespace Console_GetMyInvoice_Script.Code
             foreach (DocumentContent docContent in fileContents)
             {
                 byte[] sPDFDecoded = Convert.FromBase64String(docContent.fileContent);
+                Console.WriteLine($"Documents: {folderpath}\\{docContent.meta_data.filename}.pdf");
 
                 File.WriteAllBytes(folderpath + @$"\{docContent.meta_data.filename}.pdf", sPDFDecoded);
             }
