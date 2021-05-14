@@ -8,7 +8,7 @@ namespace Console_GetMyInvoice_Script.Code
     class RESTHandler
     {
         private readonly string basURL = "https://api.getmyinvoices.com/accounts/v3";
-        private readonly string api_key = "r7k6-vkky-yeto-5qbm-zy5s-0gyg-50ce";
+        private readonly string api_key = "bnpn-78xn-dvni-aa4e-3fmk-dnqz-2h06";
 
         public async Task<string> GetDocumentList(string filter)
         {

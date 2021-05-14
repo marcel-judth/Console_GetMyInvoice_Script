@@ -64,9 +64,9 @@ namespace Console_GetMyInvoice_Script.Code
             foreach (DocumentContent docContent in fileContents)
             {
                 byte[] sPDFDecoded = Convert.FromBase64String(docContent.fileContent);
-                Console.WriteLine($"Documents: {folderpath}\\{docContent.meta_data.filename}.pdf");
+                Console.WriteLine($"Documents: {folderpath}\\{docContent.meta_data.filename}");
 
-                File.WriteAllBytes(folderpath + @$"\{docContent.meta_data.filename}.pdf", sPDFDecoded);
+                File.WriteAllBytes(folderpath + @$"\{docContent.meta_data.filename}", sPDFDecoded);
             }
         }
     }
