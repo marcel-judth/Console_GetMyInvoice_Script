@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 
 namespace Console_GetMyInvoice_Script.Code
@@ -10,21 +11,33 @@ namespace Console_GetMyInvoice_Script.Code
     {
         readonly RESTHandler restHandler = new RESTHandler();
 
-        public void SaveGetMyInvoices(string folderpath)
+        public void SaveGetMyInvoices()
         {
-            Console.WriteLine($"loading data");
-            List<Document> allDocuments = GetDocumentsFromRESTService();
-            Console.WriteLine($"Documents: {allDocuments.Count}");
+            string settingsFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\settings.csv";
+
+            Console.WriteLine($"loading data...");
+            (string folder, var date) = CSVHandler.ReadCSVFile(settingsFilePath);
+
+            if (date.Date == DateTime.Now.AddDays(-1).Date)
+                throw new UserInfoException("No new documents available!");
+
+            List<Document> allDocuments = GetDocumentsFromRESTService(date);
+            Console.WriteLine($"Documents: {allDocuments.Count} found.");
+
+            Console.WriteLine("Parsing documents...");
             List<DocumentContent> docContents = GetInvoicesUid(allDocuments);
-            Console.WriteLine($"Documents: {docContents.Count}");
-            SaveFileContentAsPDF(docContents, folderpath);
+
+            SaveFileContentAsPDF(docContents, folder);
+            CSVHandler.SaveDateToCSVFile(settingsFilePath, folder, DateTime.Now.AddDays(-1).ToString("dd.MM.yyyy"));
         }
 
-        public List<Document> GetDocumentsFromRESTService()
+        public List<Document> GetDocumentsFromRESTService(DateTime startDate)
         {
             var filter = new
             {
-                documentTypeFilter = "INCOMING_INVOICE"
+                documentTypeFilter = "INCOMING_INVOICE",
+                startDateFilter = startDate.ToString("yyyy-MM-dd"),
+                endDateFilter = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd")
             };
 
             string jsonFilter = JsonSerializer.Serialize(filter);
@@ -64,7 +77,7 @@ namespace Console_GetMyInvoice_Script.Code
             foreach (DocumentContent docContent in fileContents)
             {
                 byte[] sPDFDecoded = Convert.FromBase64String(docContent.fileContent);
-                Console.WriteLine($"Documents: {folderpath}\\{docContent.meta_data.filename}");
+                //Console.WriteLine($"Documents: {folderpath}\\{docContent.meta_data.filename}");
 
                 File.WriteAllBytes(folderpath + @$"\{docContent.meta_data.filename}", sPDFDecoded);
             }
