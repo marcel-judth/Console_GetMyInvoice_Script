@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,7 +14,7 @@ namespace Console_GetMyInvoice_Script.Code
 
         public void SaveGetMyInvoices()
         {
-            string settingsFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\settings.csv";
+            string settingsFilePath = Environment.CurrentDirectory + "\\settings.csv";
 
             Console.WriteLine($"loading data...");
             (string folder, var date) = CSVHandler.ReadCSVFile(settingsFilePath);

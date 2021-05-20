@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <Content Include="settings.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
